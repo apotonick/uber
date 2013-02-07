@@ -4,8 +4,8 @@ require File.expand_path('../lib/uber/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Nick Sutterer"]
   gem.email         = ["apotonick@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{A gem-authoring framework.}
+  gem.summary       = %q{Uber is a gem-authoring framework that brings simple module inheritance and more.}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($\)
