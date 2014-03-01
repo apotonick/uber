@@ -2,17 +2,14 @@ require 'test_helper'
 require 'uber/inheritable_included'
 
 module InheritIncludedTo
-  def self.call(base, includer, proc)
+  def self.call(includer, proc)
     proc.call(includer) # das will ich eigentlich machen
 
-    includer.instance_eval do
-      @block = proc
-    end
-
     includer.class_eval do
-      puts "addin included to #{base}"
+      @block = proc
+
       def self.included(b) #
-        InheritIncludedTo.call(self, b, self.instance_variable_get(:@block))
+        InheritIncludedTo.call(b, self.instance_variable_get(:@block))
       end
     end
   end
@@ -27,7 +24,7 @@ class InheritanceTest < MiniTest::Spec
 
     def self.included(includer) #
       # CODE_BLOCK.call(base)
-      InheritIncludedTo.call(self, includer, CODE_BLOCK)
+      InheritIncludedTo.call(includer, CODE_BLOCK)
     end
 
     module ClassMethods
