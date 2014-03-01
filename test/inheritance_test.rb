@@ -19,7 +19,7 @@ class InheritanceTest < MiniTest::Spec
   module Feature
     #extend Uber::InheritedIncluded
 
-    ::CODE_BLOCK = lambda { |base| base.class_eval { extend ClassMethods } } # i want that to be executed at every include
+    CODE_BLOCK = lambda { |base| base.class_eval { extend ClassMethods } } # i want that to be executed at every include
 
 
     def self.included(includer) #
