@@ -14,6 +14,6 @@ Gem::Specification.new do |gem|
   gem.name          = "uber"
   gem.require_paths = ["lib"]
   gem.version       = Uber::VERSION
-  
-  gem.add_development_dependency "minitest", ">= 2.8.1"
+
+  gem.add_development_dependency "minitest", ">=5.0.0"
 end
