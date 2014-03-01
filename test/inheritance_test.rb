@@ -8,8 +8,8 @@ module InheritIncludedTo
     includer.class_eval do
       @block = proc
 
-      def self.included(b) #
-        InheritIncludedTo.call(b, self.instance_variable_get(:@block))
+      def self.included(base) #
+        InheritIncludedTo.call(base, instance_variable_get(:@block))
       end
     end
   end
