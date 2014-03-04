@@ -4,6 +4,16 @@ module Feature
     end
   end
 
+  # in uber, this would look somehow like
+  # module Feature
+  #   module ClassMethods ... end
+
+  #   extend Uber::InheritableIncluded
+  #   inheritable_included do |includer|
+  #     includer.extend ClassMethods
+  #   end
+  # end
+
   InheritedIncludedCodeBlock = lambda do |includer|
     includer.extend ClassMethods
   end
