@@ -8,6 +8,7 @@ Add this line to your application's Gemfile:
 
     gem 'uber'
 
+Ready?
 
 # Inheritable Class Attributes
 
