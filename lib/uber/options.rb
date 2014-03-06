@@ -13,12 +13,14 @@ module Uber
     #   0.120000   0.010000   0.130000 (  0.135803) return self
     #   0.930000   0.060000   0.990000 (  0.997095) without v.evaluate
 
+    # Evaluates every element and returns a hash.  Accepts context and arbitrary arguments.
     def evaluate(context, *args)
       return @static unless dynamic?
 
       evaluate_for(context, *args)
     end
 
+    # Evaluates a single value.
     def eval(key, *args)
       self[key].evaluate(*args)
     end
@@ -39,18 +41,17 @@ module Uber
 
     class Value # TODO: rename to Value.
       def initialize(value, options={})
-        @value = value || true
-        @options = options
+        @value, @options = value, options
       end
 
       def evaluate(context, *args)
-        return true if @value.is_a?(TrueClass)
+        return @value unless callable?
 
         evaluate_for(context, *args)
       end
 
       def dynamic?
-        @options[:instance_method] || @value.kind_of?(Proc)
+        @options[:instance_method] || callable?
       end
 
     private
@@ -62,6 +63,10 @@ module Uber
       def proc!(context, *args)
         return context.send(@value, *args) if @options[:instance_method]
         @value
+      end
+
+      def callable?
+        @value.kind_of?(Proc)
       end
     end
   end

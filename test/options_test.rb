@@ -14,7 +14,12 @@ class UberOptionTest < MiniTest::Spec
     it { Value.new(:method, :instance_method => true).dynamic?.must_equal true }
   end
 
+  describe "#evaluate" do
+    it { Value.new(nil).evaluate(Object.new).must_equal nil }
+    it { Value.new(nil, :instance_method => true).evaluate(Object.new).must_equal nil }
 
+    it { Value.new(true).evaluate(Object.new).must_equal true }
+  end
 
   # it "speed" do
   #   require "benchmark"
@@ -64,7 +69,7 @@ class UberOptionsTest < MiniTest::Spec
     end
   end
 
-  describe "#[]" do
+  describe "#eval" do
     it { dynamic.eval(:volume, 999).must_equal 1 }
     it { dynamic.eval(:style, 999).must_equal "Punkrock" }
     it { dynamic.eval(:track, 999).must_equal "999" }
