@@ -3,38 +3,40 @@ module Uber
   # TODO: save iteration where we look for lambda and flag that right away.
   class Options < Hash
     class Option
-      def initialize(proc, options={})
-        @proc = proc || true
+      def initialize(value, options={})
+        @value = value || true
         @options = options
       end
 
       def evaluate(context, *args)
-        return true if @proc.is_a?(TrueClass)
+        return true if @value.is_a?(TrueClass)
 
         evaluate_for(context, *args)
       end
 
-
-    private
       def dynamic?
-        @options[:instance_method] || @proc.kind_of?(Proc)
+        @options[:instance_method] || @value.kind_of?(Proc)
       end
 
-
+    private
       def evaluate_for(context, *args)
-        return proc!(context, *args) unless @proc.kind_of?(Proc)
-        @proc.call(context, *args) # TODO: change to context.instance_exec and deprecate first argument.
+        return proc!(context, *args) unless @value.kind_of?(Proc)
+        @value.call(context, *args) # TODO: change to context.instance_exec and deprecate first argument.
       end
 
       def proc!(context, *args)
-        return context.send(@proc, *args) if @options[:instance_method]
-        @proc
+        return context.send(@value, *args) if @options[:instance_method]
+        @value
       end
     end
 
+
     def initialize(options)
+      @is_dynamic = false
+
       options.each do |k,v|
-        self[k] = Option.new(v)
+        self[k] = option = Option.new(v)
+        @is_dynamic ||= option.dynamic?
       end
     end
 
@@ -50,6 +52,11 @@ module Uber
           evaluated[k] = v.evaluate(context, *args)
         end
       end
+    end
+
+  private
+    def dynamic?
+      @is_dynamic
     end
   end
 end
