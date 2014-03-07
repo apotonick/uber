@@ -55,14 +55,18 @@ module Uber
       end
 
     private
-      def evaluate_for(context, *args)
-        return proc!(context, *args) unless @value.kind_of?(Proc)
-        @value.call(context, *args) # TODO: change to context.instance_exec and deprecate first argument.
+      def evaluate_for(*args)
+        return method!(*args) unless callable?
+         # TODO: change to context.instance_exec and deprecate first argument.
+         proc!(*args)
+      end
+
+      def method!(context, *args)
+        context.send(@value, *args)
       end
 
       def proc!(context, *args)
-        return context.send(@value, *args) if @options[:instance_method]
-        @value
+        @value.call(context, *args)
       end
 
       def callable?
