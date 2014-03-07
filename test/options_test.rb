@@ -5,13 +5,14 @@ class UberOptionTest < MiniTest::Spec
   Value = Uber::Options::Value
 
   describe "#dynamic?" do
-    it { Value.new(1).dynamic?.must_equal false }
-    it { Value.new(true).dynamic?.must_equal false }
-    it { Value.new(:loud).dynamic?.must_equal false }
+    it { Value.new(1).dynamic?.must_equal nil }
+    it { Value.new(true).dynamic?.must_equal nil }
+    it { Value.new("loud").dynamic?.must_equal nil }
+    it { Value.new(:loud, :dynamic => false).dynamic?.must_equal false }
 
     it { Value.new(lambda {}).dynamic?.must_equal true }
     it { Value.new(Proc.new{}).dynamic?.must_equal true }
-    it { Value.new(:method, :instance_method => true).dynamic?.must_equal true }
+    it { Value.new(:method).dynamic?.must_equal true }
   end
 
   describe "#evaluate" do
@@ -19,12 +20,13 @@ class UberOptionTest < MiniTest::Spec
     let (:version) { Module.new { def version; 999 end } }
 
     it { Value.new(nil).evaluate(Object.new).must_equal nil }
-    it { Value.new(nil, :instance_method => true).evaluate(Object.new).must_equal nil }
+    # it { Value.new(nil, :dynamic => true).evaluate(Object.new).must_equal nil } # DISCUSS: should we handle that?
 
     it { Value.new(true).evaluate(Object.new).must_equal true }
 
-    it { Value.new(:version,  :instance_method => true).evaluate(object.extend(version)).must_equal 999 }
-    it { Value.new("version", :instance_method => true).evaluate(object.extend(version)).must_equal "version" } # DISCUSS: change that behaviour?
+    it { Value.new(:version).evaluate(object.extend(version)).must_equal 999 }
+    it { Value.new("version", :dynamic => true).evaluate(object.extend(version)).must_equal 999 }
+    it { Value.new(:version, :dynamic => false).evaluate(object.extend(version)).must_equal :version }
   end
 
   # it "speed" do
