@@ -46,8 +46,8 @@ module Uber
         return if @options.has_key?(:dynamic)
 
         # conventional behaviour:
-        @options[:dynamic] = true if @value.kind_of?(Proc)
-        @options[:dynamic] = true if @value.is_a?(Symbol)
+        @callable = @options[:dynamic] = true if @value.kind_of?(Proc)
+        @options[:dynamic] = true             if @value.is_a?(Symbol)
       end
 
       def evaluate(context, *args)
@@ -76,7 +76,7 @@ module Uber
       end
 
       def callable?
-        @value.kind_of?(Proc)
+        @callable
       end
     end
   end
