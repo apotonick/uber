@@ -15,10 +15,16 @@ class UberOptionTest < MiniTest::Spec
   end
 
   describe "#evaluate" do
+    let (:object) { Object.new }
+    let (:version) { Module.new { def version; 999 end } }
+
     it { Value.new(nil).evaluate(Object.new).must_equal nil }
     it { Value.new(nil, :instance_method => true).evaluate(Object.new).must_equal nil }
 
     it { Value.new(true).evaluate(Object.new).must_equal true }
+
+    it { Value.new(:version,  :instance_method => true).evaluate(object.extend(version)).must_equal 999 }
+    it { Value.new("version", :instance_method => true).evaluate(object.extend(version)).must_equal "version" } # DISCUSS: change that behaviour?
   end
 
   # it "speed" do

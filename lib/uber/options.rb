@@ -45,13 +45,13 @@ module Uber
       end
 
       def evaluate(context, *args)
-        return @value unless callable?
+        return @value unless dynamic?
 
         evaluate_for(context, *args)
       end
 
       def dynamic?
-        @options[:instance_method] || callable?
+        instance_method? || callable?
       end
 
     private
@@ -67,6 +67,10 @@ module Uber
 
       def callable?
         @value.kind_of?(Proc)
+      end
+
+      def instance_method?
+        @options[:instance_method] and @value.is_a?(Symbol)
       end
     end
   end
