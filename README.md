@@ -133,12 +133,6 @@ Use `Options::Value#evaluate` to handle single values.
 Evaluating an options hash can be time-consuming. When `Options` contains static elements only, it behaves *and performs* like an ordinary hash.
 
 
-Uber::Options.new volume: 9, track: lambda { |s| s.track }
-
-
-dynamic: true
-
-only use for declarative assets, not at runtime (use a hash)
 
 # Undocumented Features
 
