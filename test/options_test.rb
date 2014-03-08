@@ -3,6 +3,7 @@ require 'uber/options'
 
 class UberOptionTest < MiniTest::Spec
   Value = Uber::Options::Value
+  let (:object) { Object.new }
 
   describe "#dynamic?" do
     it { Value.new(1).dynamic?.must_equal nil }
@@ -16,7 +17,6 @@ class UberOptionTest < MiniTest::Spec
   end
 
   describe "#evaluate" do
-    let (:object) { Object.new }
     let (:version) { Module.new { def version; 999 end } }
 
     it { Value.new(nil).evaluate(Object.new).must_equal nil }
@@ -27,6 +27,14 @@ class UberOptionTest < MiniTest::Spec
     it { Value.new(:version).evaluate(object.extend(version)).must_equal 999 }
     it { Value.new("version", :dynamic => true).evaluate(object.extend(version)).must_equal 999 }
     it { Value.new(:version, :dynamic => false).evaluate(object.extend(version)).must_equal :version }
+  end
+
+  describe "passing options" do
+    let (:version) { Module.new { def version(*args); args.inspect end } }
+    let (:block) { Proc.new { |*args| args.inspect } }
+
+    it { Value.new(:version).evaluate(object.extend(version), 1, 2, 3).must_equal "[1, 2, 3]" }
+    it { Value.new(block).evaluate(object, 1, 2, 3).must_equal "[1, 2, 3]" }
   end
 
   # it "speed" do
@@ -47,6 +55,8 @@ class UberOptionTest < MiniTest::Spec
   # end
 end
 
+# TODO: test passing arguments to block and method optionally.
+
 class UberOptionsTest < MiniTest::Spec
   Options = Uber::Options
 
@@ -59,7 +69,7 @@ class UberOptionsTest < MiniTest::Spec
 
   describe "#evaluate" do
 
-    it { dynamic.evaluate(999).must_equal({:volume =>1, :style => "Punkrock", :track => "999"}) }
+    it { dynamic.evaluate(Object.new, 999).must_equal({:volume =>1, :style => "Punkrock", :track => "999"}) }
 
     describe "static" do
       let (:static) { Options.new(:volume =>1, :style => "Punkrock") }
@@ -80,6 +90,6 @@ class UberOptionsTest < MiniTest::Spec
   describe "#eval" do
     it { dynamic.eval(:volume, 999).must_equal 1 }
     it { dynamic.eval(:style, 999).must_equal "Punkrock" }
-    it { dynamic.eval(:track, 999).must_equal "999" }
+    it { dynamic.eval(:track, Object.new, 999).must_equal "999" }
   end
 end

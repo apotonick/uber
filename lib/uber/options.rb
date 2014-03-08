@@ -72,7 +72,7 @@ module Uber
       end
 
       def proc!(context, *args)
-        @value.call(context, *args)
+        context.instance_exec(*args, &@value)
       end
 
       def callable?
