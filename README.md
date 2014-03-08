@@ -65,15 +65,19 @@ Usually DSL methods accept a number of options that can either be static values,
 Here's an example from Cells.
 
 ```ruby
-cache :show, tags: lambda { Tag.last }, expire_in: 5.mins, ttl: :time_to_live
+cache :show, tags: lambda { Tag.last }, expires_in: 5.mins, ttl: :time_to_live
 ```
 
-Usually, when processing these options, you'd have to check every option for its type, evaluate the `tag:` lambda in a particular context, call the `#time_to_live` instance method, etc.
+Usually, when processing these options, you'd have to check every option for its type, evaluate the `tags:` lambda in a particular context, call the `#time_to_live` instance method, etc.
 
 This is abstracted in `Uber::Options` and could be implemented like this.
 
 ```ruby
-options = Uber::Options.new(tags: lambda { Tag.last }, expire_in: 5.mins, ttl: :time_to_live)
+require 'uber/options'
+
+options = Uber::Options.new(tags:       lambda { Tag.last },
+                            expires_in: 5.mins,
+                            ttl:        :time_to_live)
 ```
 
 Just initialize `Options` with your actual options hash. While this usually happens on class level at compile-time, evaluating the hash happens at run-time.
@@ -82,25 +86,27 @@ Just initialize `Options` with your actual options hash. While this usually happ
 class User < ActiveRecord::Base # this could be any Ruby class.
   # .. lots of code
 
-  def time_to_live
+  def time_to_live(*args)
     "n/a"
   end
 end
 
 user = User.find(1)
 
-options.evaluate(user, *args) #=> {tags: "hot", expire_in: 300, ttl: "n/a"}
+options.evaluate(user, *args) #=> {tags: "hot", expires_in: 300, ttl: "n/a"}
 ```
 
 ## Evaluating Dynamic Options
 
 To evaluate the options to a real hash, the following happens:
 
-* The `tags:` lambda is executed in `user` context (using `instance_exec`). This allows accessing instance variables or calling instance methods. All `*args` are passed as block parameters to the lambda.
+* The `tags:` lambda is executed in `user` context (using `instance_exec`). This allows accessing instance variables or calling instance methods.
 * Nothing is done with `expires_in`'s value, it is static.
 * `user.time_to_live?` is called as the symbol `:time_to_live` indicates that this is an instance method.
 
-The default behaviour is to treat `Proc`s, lambdas and symbolized `:method` names as dynamic options, everything else is considered static. This is a pattern well-known from Rails and other frameworks.
+The default behaviour is to treat `Proc`s, lambdas and symbolized `:method` names as dynamic options, everything else is considered static. Optional arguments from the `evaluate` call are passed in either as block or method arguments for dynamic options.
+
+This is a pattern well-known from Rails and other frameworks.
 
 ## Evaluating Elements
 
