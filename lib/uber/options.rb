@@ -41,13 +41,15 @@ module Uber
 
     class Value # TODO: rename to Value.
       def initialize(value, options={})
-        @value, @options = value, options
+        @value, @dynamic = value, options[:dynamic]
 
-        return if @options.has_key?(:dynamic)
+        @callable = true if @value.kind_of?(Proc)
+
+        return if options.has_key?(:dynamic)
 
         # conventional behaviour:
-        @callable = @options[:dynamic] = true if @value.kind_of?(Proc)
-        @options[:dynamic] = true             if @value.is_a?(Symbol)
+        @dynamic = true if @callable
+        @dynamic = true if @value.is_a?(Symbol)
       end
 
       def evaluate(context, *args)
@@ -57,7 +59,7 @@ module Uber
       end
 
       def dynamic?
-        @options[:dynamic]
+        @dynamic
       end
 
     private

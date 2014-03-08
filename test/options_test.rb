@@ -10,6 +10,7 @@ class UberOptionTest < MiniTest::Spec
     it { Value.new(true).dynamic?.must_equal nil }
     it { Value.new("loud").dynamic?.must_equal nil }
     it { Value.new(:loud, :dynamic => false).dynamic?.must_equal false }
+    it { Value.new("loud", :dynamic => true).dynamic?.must_equal true }
 
     it { Value.new(lambda {}).dynamic?.must_equal true }
     it { Value.new(Proc.new{}).dynamic?.must_equal true }
@@ -27,6 +28,8 @@ class UberOptionTest < MiniTest::Spec
     it { Value.new(:version).evaluate(object.extend(version)).must_equal 999 }
     it { Value.new("version", :dynamic => true).evaluate(object.extend(version)).must_equal 999 }
     it { Value.new(:version, :dynamic => false).evaluate(object.extend(version)).must_equal :version }
+
+    it { Value.new(lambda { :loud }, :dynamic => true).evaluate(object).must_equal :loud }
   end
 
   describe "passing options" do
