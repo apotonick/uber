@@ -6,7 +6,8 @@ Gem::Specification.new do |gem|
   gem.email         = ["apotonick@gmail.com"]
   gem.description   = %q{A gem-authoring framework.}
   gem.summary       = %q{Gem-authoring tools like class method inheritance in modules, dynamic options and more.}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/apotonick/uber"
+  gem.license       = "MIT"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
