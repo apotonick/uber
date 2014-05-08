@@ -135,13 +135,13 @@ Evaluating an options hash can be time-consuming. When `Options` contains static
 
 # Version
 
-Writing gems against other gems often involves checking for versions and loading appropriate version strategies (e.g. "is Rails >= 4.0?". Uber gives you `Version` for easy, semantic version deciders.
+Writing gems against other gems often involves checking for versions and loading appropriate version strategies - e.g. _"is Rails >= 4.0?"_. Uber gives you `Version` for easy, semantic version deciders.
 
 ```ruby
   version = Uber::Version.new("1.2.3")
 ```
 
-The API currently gives you `>=` and `~`.
+The API currently gives you `#>=` and `#~`.
 
 ```ruby
   version >= "1.1" #=> true
