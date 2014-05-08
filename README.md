@@ -133,6 +133,36 @@ Use `Options::Value#evaluate` to handle single values.
 Evaluating an options hash can be time-consuming. When `Options` contains static elements only, it behaves *and performs* like an ordinary hash.
 
 
+# Version
+
+When writing gems against other gems involves checking for versions and loading appropriate version strategies (e.g. "is Rails >= 4.0?". Uber gives you `Version` for easy, semantic version deciders.
+
+```ruby
+  version = Uber::Version.new("1.2.3")
+```
+
+The API currently gives you `>=` and `~`.
+
+```ruby
+  version >= "1.1" #=> true
+  version >= "1.3" #=> false
+```
+
+The `~` method does a semantic check (currently on major and minor level, only).
+
+```ruby
+  version.~ "1.1" #=> false
+  version.~ "1.2" #=> true
+  version.~ "1.3" #=> false
+```
+
+Accepting a list of versions, it makes it simple to check for multiple minor versions.
+
+```ruby
+  version.~ "1.1", "1.0" #=> false
+  version.~ "1.1", "1.2" #=> true
+```
+
 
 # Undocumented Features
 

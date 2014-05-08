@@ -1,3 +1,7 @@
+# 0.0.5
+
+Add `Uber::Version` for simple gem version deciders.
+
 # 0.0.4
 
 * Fix a bug where `dynamic: true` wouldn't invoke a method but try to run it as a block.
