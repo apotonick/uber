@@ -12,7 +12,8 @@ module Uber
     def >=(version)
       major, minor, patch = parse(version)
 
-      self[:major] >= major and self[:minor] >= minor and self[:patch] >= patch
+      self[:major] > major or
+        (self[:major] == major and self[:minor] >= minor and self[:patch] >= patch)
     end
 
     def ~(*versions)

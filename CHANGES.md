@@ -1,6 +1,10 @@
+# 0.0.6
+
+* Fix `Version#>=` partially.
+
 # 0.0.5
 
-Add `Uber::Version` for simple gem version deciders.
+* Add `Uber::Version` for simple gem version deciders.
 
 # 0.0.4
 
