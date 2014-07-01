@@ -108,9 +108,32 @@ The default behaviour is to treat `Proc`s, lambdas and symbolized `:method` name
 
 This is a pattern well-known from Rails and other frameworks.
 
+## Uber::Callable
+
+A third way of providing a dynamic option is using a "callable" object. This saves you the unreadable lambda syntax and gives you more flexibility.
+
+```ruby
+require 'uber/callable'
+class Tags
+  include Uber::Callable
+
+  def call(context, *args)
+    [:comment]
+  end
+end
+```
+
+By including `Uber::Callable`, uber will invoke the `#call` method on the specified object.
+
+Note how you simply pass an instance of the callable object into the hash instead of a lambda.
+
+```ruby
+options = Uber::Options.new(tags: Tags.new)
+```
+
 ## Evaluating Elements
 
-If you wanna evaluate a single option element, use `#eval`.
+If you want to evaluate a single option element, use `#eval`.
 
 ```ruby
 options.eval(:ttl, user) #=> "n/a"

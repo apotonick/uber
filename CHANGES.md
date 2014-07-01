@@ -1,3 +1,7 @@
+# 0.0.7
+
+* Add `Uber::Callable` and support for it in `Options::Value`.
+
 # 0.0.6
 
 * Fix `Version#>=` partially.

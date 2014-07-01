@@ -1,3 +1,5 @@
+require 'uber/callable'
+
 module Uber
   class Options < Hash
     def initialize(options)
@@ -43,13 +45,13 @@ module Uber
       def initialize(value, options={})
         @value, @dynamic = value, options[:dynamic]
 
-        @callable = true if @value.kind_of?(Proc)
+        @proc     = proc?
+        @callable = callable?
+        @method   = method?
 
         return if options.has_key?(:dynamic)
 
-        # conventional behaviour:
-        @dynamic = true if @callable
-        @dynamic = true if @value.is_a?(Symbol)
+        @dynamic = @proc || @callable || @method
       end
 
       def evaluate(context, *args)
@@ -64,9 +66,10 @@ module Uber
 
     private
       def evaluate_for(*args)
-        return method!(*args) unless callable?
+        return proc!(*args)     if @proc
+        return callable!(*args) if @callable
+        method!(*args)
          # TODO: change to context.instance_exec and deprecate first argument.
-         proc!(*args)
       end
 
       def method!(context, *args)
@@ -77,8 +80,21 @@ module Uber
         context.instance_exec(*args, &@value)
       end
 
+      # Callable object is executed in its original context.
+      def callable!(context, *args)
+        @value.call(context, *args)
+      end
+
+      def proc?
+        @value.kind_of?(Proc)
+      end
+
       def callable?
-        @callable
+        @value.is_a?(Uber::Callable)
+      end
+
+      def method?
+        @value.is_a?(Symbol)
       end
     end
   end

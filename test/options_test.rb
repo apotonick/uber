@@ -7,13 +7,13 @@ class UberOptionTest < MiniTest::Spec
 
   class Callable
     include Uber::Callable
-    def call; 999 end
+    def call(*); 999 end
   end
 
   describe "#dynamic?" do
-    it { Value.new(1).dynamic?.must_equal nil }
-    it { Value.new(true).dynamic?.must_equal nil }
-    it { Value.new("loud").dynamic?.must_equal nil }
+    it { Value.new(1).dynamic?.must_equal false }
+    it { Value.new(true).dynamic?.must_equal false }
+    it { Value.new("loud").dynamic?.must_equal false }
     it { Value.new(:loud, :dynamic => false).dynamic?.must_equal false }
     it { Value.new("loud", :dynamic => true).dynamic?.must_equal true }
 
@@ -22,7 +22,7 @@ class UberOptionTest < MiniTest::Spec
     it { Value.new(:method).dynamic?.must_equal true }
 
     # Uber::Callable
-    # it { Value.new(Callable.new).dynamic?.must_equal true }
+    it { Value.new(Callable.new).dynamic?.must_equal true }
   end
 
   describe "#evaluate" do
@@ -40,15 +40,17 @@ class UberOptionTest < MiniTest::Spec
     it { Value.new(lambda { :loud }, :dynamic => true).evaluate(object).must_equal :loud }
 
     # Uber::Callable
-    # it { Value.new(Callable.new).evaluate(nil).must_equal 999 }
+    it { Value.new(Callable.new).evaluate(nil).must_equal 999 }
   end
 
   describe "passing options" do
     let (:version) { Module.new { def version(*args); args.inspect end } }
     let (:block) { Proc.new { |*args| args.inspect } }
+    let (:callable) { (Class.new { include Uber::Callable; def call(*args); args.inspect; end }).new }
 
     it { Value.new(:version).evaluate(object.extend(version), 1, 2, 3).must_equal "[1, 2, 3]" }
     it { Value.new(block).evaluate(object, 1, 2, 3).must_equal "[1, 2, 3]" }
+    it { Value.new(callable).evaluate(Object, 1, 2, 3).must_equal "[Object, 1, 2, 3]" }
   end
 
   # it "speed" do
