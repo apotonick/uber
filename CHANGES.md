@@ -1,3 +1,7 @@
+# 0.0.8
+
+* Add `Uber::Delegates` that provides delegation that can be overridden and called with `super`.
+
 # 0.0.7
 
 * Add `Uber::Callable` and support for it in `Options::Value`.
