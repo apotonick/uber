@@ -156,6 +156,40 @@ Use `Options::Value#evaluate` to handle single values.
 Evaluating an options hash can be time-consuming. When `Options` contains static elements only, it behaves *and performs* like an ordinary hash.
 
 
+# Delegates
+
+Using `::delegates` works exactly like the `Forwardable` module in Ruby, with one bonus: It creates the accessors in a module, allowing you to override and call `super` in a user module or class.
+
+```ruby
+require 'uber/delegates'
+
+class SongDecorator
+  def initialize(song)
+    @song = song
+  end
+  attr_reader :song
+
+  extend Uber::Delegates
+
+  delegates :song, :title, :id # delegate :title and :id to #song.
+
+  def title
+    super.downcase # this calls the original delegate #title.
+  end
+end
+```
+
+This creates readers `#title` and `#id` which are delegated to `#song`.
+
+```ruby
+song = SongDecorator.new(Song.create(id: 1, title: "HELLOWEEN!"))
+
+song.id #=> 1
+song.title #=> "helloween!"
+```
+
+Note how `#title` calls the original title and then downcases the string.
+
 # Version
 
 Writing gems against other gems often involves checking for versions and loading appropriate version strategies - e.g. _"is Rails >= 4.0?"_. Uber gives you `Version` for easy, semantic version deciders.
