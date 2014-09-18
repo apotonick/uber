@@ -6,7 +6,9 @@ _Gem-authoring tools like class method inheritance in modules, dynamic options a
 
 Add this line to your application's Gemfile:
 
-    gem 'uber'
+```ruby
+gem 'uber'
+```
 
 Ready?
 
@@ -195,29 +197,29 @@ Note how `#title` calls the original title and then downcases the string.
 Writing gems against other gems often involves checking for versions and loading appropriate version strategies - e.g. _"is Rails >= 4.0?"_. Uber gives you `Version` for easy, semantic version deciders.
 
 ```ruby
-  version = Uber::Version.new("1.2.3")
+version = Uber::Version.new("1.2.3")
 ```
 
 The API currently gives you `#>=` and `#~`.
 
 ```ruby
-  version >= "1.1" #=> true
-  version >= "1.3" #=> false
+version >= "1.1" #=> true
+version >= "1.3" #=> false
 ```
 
 The `~` method does a semantic check (currently on major and minor level, only).
 
 ```ruby
-  version.~ "1.1" #=> false
-  version.~ "1.2" #=> true
-  version.~ "1.3" #=> false
+version.~ "1.1" #=> false
+version.~ "1.2" #=> true
+version.~ "1.3" #=> false
 ```
 
 Accepting a list of versions, it makes it simple to check for multiple minor versions.
 
 ```ruby
-  version.~ "1.1", "1.0" #=> false
-  version.~ "1.1", "1.2" #=> true
+version.~ "1.1", "1.0" #=> false
+version.~ "1.1", "1.2" #=> true
 ```
 
 
@@ -225,7 +227,7 @@ Accepting a list of versions, it makes it simple to check for multiple minor ver
 
 (Please don't read this!)
 
-* You can enforce treating values as dynamic (or not): `Uber::Options::Value.new("time_to_live", dynamic: true)` will always run `#time_to_live` as an instance method on the context, even thou it is not a symbol.
+* You can enforce treating values as dynamic (or not): `Uber::Options::Value.new("time_to_live", dynamic: true)` will always run `#time_to_live` as an instance method on the context, even though it is not a symbol.
 
 # License
 
