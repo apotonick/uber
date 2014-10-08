@@ -1,3 +1,7 @@
+# 0.0.9
+
+* Add `Uber::Builder`.
+
 # 0.0.8
 
 * Add `Uber::Delegates` that provides delegation that can be overridden and called with `super`.

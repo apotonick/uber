@@ -192,6 +192,46 @@ song.title #=> "helloween!"
 
 Note how `#title` calls the original title and then downcases the string.
 
+
+# Builder
+
+When included, `Builder` allows to add builder instructions on the class level. These can then be evaluated when instantiating
+the class to conditionally build (sub-)classes based on the incoming parameters.
+
+```ruby
+class Listener
+  include Uber::Builder
+
+  builds do |params|
+    SignedIn if params[:current_user]
+  end
+end
+
+class SignedIn
+end
+```
+
+The class then has to use the builder to compute a class name using the build blocks you defined.
+
+```ruby
+class Listener
+  def self.build(params)
+    class_builder.call(params).
+    new(params)
+  end
+end
+```
+
+As you can see, it's still up to you to _instantiate_ the object, the builder only helps you computing the concrete class.
+
+```ruby
+Listener.build({}) #=> Listener
+Listener.build({current_user: @current_user}) #=> SignedIn
+```
+
+This pattern is used in [Cells](https://github.com/apotonick/cells), [Trailblazer](https://github.com/apotonick/trailblazer) and soon Reform and Representable/Roar, too.
+
+
 # Version
 
 Writing gems against other gems often involves checking for versions and loading appropriate version strategies - e.g. _"is Rails >= 4.0?"_. Uber gives you `Version` for easy, semantic version deciders.
