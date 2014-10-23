@@ -229,8 +229,9 @@ Listener.build({}) #=> Listener
 Listener.build({current_user: @current_user}) #=> SignedIn
 ```
 
-This pattern is used in [Cells](https://github.com/apotonick/cells), [Trailblazer](https://github.com/apotonick/trailblazer) and soon Reform and Representable/Roar, too.
+Note that builders are _not_ inherited to subclasses. This allows instantiating subclasses directly without running builders.
 
+This pattern is used in [Cells](https://github.com/apotonick/cells), [Trailblazer](https://github.com/apotonick/trailblazer) and soon Reform and Representable/Roar, too.
 
 # Version
 

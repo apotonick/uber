@@ -1,3 +1,7 @@
+# 0.0.10
+
+* Builders are _not_ inherited to subclasses. This allows instantiating subclasses directly without running builders.
+
 # 0.0.9
 
 * Add `Uber::Builder`.
