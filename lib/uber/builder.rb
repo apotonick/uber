@@ -1,5 +1,3 @@
-require 'uber/inheritable_attr'
-
 module Uber
   # When included, allows to add builder on the class level.
   #
@@ -21,10 +19,13 @@ module Uber
   #     end
   module Builder
     def self.included(base)
-      base.extend(ClassMethods)
-      base.extend(InheritableAttr)
-      base.inheritable_attr :builders
-      base.builders = []
+      base.class_eval do
+        def self.builders
+          @builders ||= []
+        end
+
+        extend ClassMethods
+      end
     end
 
     class Constant

@@ -49,11 +49,11 @@ class BuilderTest < MiniTest::Spec
   it { Track.build({hit: true}).must_be_instance_of Hit }
 
 
-  # test inheritance.
+  # test inheritance. builder do not inherit.
   class Play < Song
   end
 
   it { Play.build({}).must_be_instance_of Play }
-  it { Play.build({evergreen: true}).must_be_instance_of Evergreen }
-  it { Play.build({hit: true}).must_be_instance_of Hit }
+  it { Play.build({evergreen: true}).must_be_instance_of Play }
+  it { Play.build({hit: true}).must_be_instance_of Play }
 end
