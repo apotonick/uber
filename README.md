@@ -14,7 +14,8 @@ Ready?
 
 # Inheritable Class Attributes
 
-This is for you if you want class attributes to be inherited, which is a mandatory mechanism for creating DSLs.
+If you want inherited class attributes, this is for you.
+This is a mandatory mechanism for creating DSLs.
 
 ```ruby
 require 'uber/inheritable_attr'
@@ -27,15 +28,13 @@ class Song
 end
 ```
 
-Note that you have to initialize your attribute which whatever you want - usually a hash or an array.
-
-You can now use that attribute on the class level.
+Note that you have to initialize your class attribute with whatever you want - usually a hash or an array.
 
 ```ruby
 Song.properties #=> [:title, :track]
 ```
 
-Inheriting from `Song` will result in the `properties` object being `clone`d to the sub-class.
+A subclass of `Song` will have a `clone`d `properties` class attribute.
 
 ```ruby
 class Hit < Song
@@ -44,7 +43,7 @@ end
 Hit.properties #=> [:title, :track]
 ```
 
-The cool thing about the inheritance is: you can work on the inherited attribute without any restrictions, as it is a _copy_ of the original.
+The cool thing about the inheritance is: you can work on the inherited attribute without any restrictions. It is a _copy_ of the original.
 
 ```ruby
 Hit.properties << :number
@@ -53,10 +52,10 @@ Hit.properties  #=> [:title, :track, :number]
 Song.properties #=> [:title, :track]
 ```
 
-It's similar to ActiveSupport's `class_attribute` but with a simpler implementation resulting in a less dangerous potential. Also, there is no restriction about the way you modify the attribute [as found in `class_attribute`](http://apidock.com/rails/v4.0.2/Class/class_attribute).
+It's similar to ActiveSupport's `class_attribute` but with a simpler implementation.
+It is less dangerous. There are no restrictions for modifying the attribute. [compared to `class_attribute`](http://apidock.com/rails/v4.0.2/Class/class_attribute).
 
-This module is very popular amongst numerous gems like Cells, Representable, Roar and Reform.
-
+This module is used across several other gems like [Cells](https://rubygems.org/gems/cells), [Representable](https://rubygems.org/gems/representable), [Roar](https://rubygems.org/gems/roar) and [Reform](https://rubygems.org/gems/reform).
 
 # Dynamic Options
 
@@ -274,4 +273,4 @@ version.~ "1.1", "1.2" #=> true
 
 Copyright (c) 2014 by Nick Sutterer <apotonick@gmail.com>
 
-Roar is released under the [MIT License](http://www.opensource.org/licenses/MIT).
+Uber is released under the [MIT License](http://www.opensource.org/licenses/MIT).
