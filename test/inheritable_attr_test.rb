@@ -7,8 +7,13 @@ class InheritableAttrTest < MiniTest::Spec
       Class.new(Object) do
         extend Uber::InheritableAttribute
         inheritable_attr :drinks
+        inheritable_attr :glass
       end
     }
+
+    def assert_nothing_raised(*)
+      yield
+    end
 
     it "provides a reader with empty inherited attributes, already" do
       assert_equal nil, subject.drinks
@@ -49,6 +54,13 @@ class InheritableAttrTest < MiniTest::Spec
 
       subklass.drinks = [:merlot] # we only want merlot explicitely.
       assert_equal [:merlot], subklass.drinks # no :cabernet, here
+    end
+
+    it 'does not attempt to clone symbols' do
+      subject.glass = :highball
+
+      subklass = Class.new(subject)
+      assert_nothing_raised { subklass.glass }
     end
   end
 end

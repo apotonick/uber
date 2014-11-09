@@ -14,7 +14,7 @@ module Uber
 
     def self.inherit_for(klass, name)
       return unless klass.superclass.respond_to?(name) and value = klass.superclass.send(name)
-      value.clone # only do this once.
+      value.is_a?(Symbol) ? value : value.clone
     end
   end
 
