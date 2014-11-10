@@ -56,11 +56,25 @@ class InheritableAttrTest < MiniTest::Spec
       assert_equal [:merlot], subklass.drinks # no :cabernet, here
     end
 
-    it 'does not attempt to clone symbols' do
+    it "does not attempt to clone symbols" do
       subject.glass = :highball
-
       subklass = Class.new(subject)
-      assert_nothing_raised { subklass.glass }
+
+      subklass.glass.must_equal :highball
+    end
+
+    it "does not attempt to clone true" do
+      subject.glass = true
+      subklass = Class.new(subject)
+
+      subklass.glass.must_equal true
+    end
+
+    it "does not attempt to clone false" do
+      subject.glass = false
+      subklass = Class.new(subject)
+
+      subklass.glass.must_equal false
     end
   end
 end
