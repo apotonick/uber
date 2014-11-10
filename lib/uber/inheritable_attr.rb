@@ -14,10 +14,10 @@ module Uber
     end
 
     def self.inherit_for(klass, name)
-      if klass.superclass.respond_to?(name)
-        value = klass.superclass.send(name) # could be nil.
-        Clone.new.call(value)
-      end
+      return unless klass.superclass.respond_to?(name)
+
+      value = klass.superclass.send(name) # could be nil.
+      Clone.new.call(value)
     end
 
     class Clone
