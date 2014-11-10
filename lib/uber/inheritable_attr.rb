@@ -17,12 +17,12 @@ module Uber
       return unless klass.superclass.respond_to?(name)
 
       value = klass.superclass.send(name) # could be nil.
-      Clone.new.call(value)
+      Clone.(value) # this could be dynamic, allowing other inheritance strategies.
     end
 
     class Clone
       # The second argument allows injecting more types.
-      def call(value, uncloneable=self.class.uncloneable)
+      def self.call(value, uncloneable=uncloneable)
         uncloneable.each { |klass| return value if value.kind_of?(klass) }
         value.clone
       end
