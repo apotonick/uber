@@ -1,3 +1,7 @@
+# 0.0.11
+
+* Don't clone nil, false, true and symbols in `::inheritable_attr`.
+
 # 0.0.10
 
 * Builders are _not_ inherited to subclasses. This allows instantiating subclasses directly without running builders.
