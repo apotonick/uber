@@ -22,7 +22,7 @@ module Uber
 
     class Clone
       # The second argument allows injecting more types.
-      def self.call(value, uncloneable=uncloneable)
+      def self.call(value, uncloneable=uncloneable())
         uncloneable.each { |klass| return value if value.kind_of?(klass) }
         value.clone
       end
