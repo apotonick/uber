@@ -1,3 +1,7 @@
+# 0.0.12
+
+* Make it run with Ruby 2.2.
+
 # 0.0.11
 
 * Don't clone nil, false, true and symbols in `::inheritable_attr`.
