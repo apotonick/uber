@@ -56,4 +56,20 @@ class BuilderTest < MiniTest::Spec
   it { Play.build({}).must_be_instance_of Play }
   it { Play.build({evergreen: true}).must_be_instance_of Play }
   it { Play.build({hit: true}).must_be_instance_of Play }
+
+  # test return from builds
+  class Boomerang
+    include Uber::Builder
+
+    builds do |options|
+      return Song if options[:hit]
+    end
+
+    def self.build(options)
+      class_builder.call(options).new
+    end
+  end
+
+  it { Boomerang.build({}).must_be_instance_of Boomerang }
+  it { Boomerang.build({hit: true}).must_be_instance_of Song }
 end

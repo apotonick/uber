@@ -80,7 +80,9 @@ module Uber
       #
       # In your view #cell will instantiate the right cell for you now.
       def builds(&block)
-        builders << block
+        obj = Object.new
+        obj.define_singleton_method(:_, &block)
+        builders << obj.method(:_).to_proc
       end
 
       def class_builder
