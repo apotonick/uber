@@ -61,7 +61,7 @@ class BuilderTest < MiniTest::Spec
   class Boomerang
     include Uber::Builder
 
-    builds do |options|
+    builds ->(options) do
       return Song if options[:hit]
     end
 
