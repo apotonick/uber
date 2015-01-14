@@ -197,6 +197,10 @@ Note how `#title` calls the original title and then downcases the string.
 When included, `Builder` allows to add builder instructions on the class level. These can then be evaluated when instantiating
 the class to conditionally build (sub-)classes based on the incoming parameters.
 
+Builders can be defined in two different ways.
+
+## Block Syntax
+
 ```ruby
 class Listener
   include Uber::Builder
@@ -227,6 +231,21 @@ As you can see, it's still up to you to _instantiate_ the object, the builder on
 Listener.build({}) #=> Listener
 Listener.build({current_user: @current_user}) #=> SignedIn
 ```
+
+## Proc Syntax
+
+Setting up builders using the proc syntax allows to call `return` in the block. This is our preferred way to define builders.
+
+```ruby
+build ->(params) do
+  return SignedIn if params[:current_user]
+  return Admin    if params[:admin]
+  Default
+end
+```
+
+This makes the block extremely readable.
+
 
 Note that builders are _not_ inherited to subclasses. This allows instantiating subclasses directly without running builders.
 

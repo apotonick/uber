@@ -1,3 +1,7 @@
+# 0.0.13
+
+* Add proc syntax for builders. This allows using `return` in the block. Thanks to @dutow for implementing this.
+
 # 0.0.12
 
 * Make it run with Ruby 2.2.
