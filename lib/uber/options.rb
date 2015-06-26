@@ -77,7 +77,11 @@ module Uber
       end
 
       def proc!(context, *args)
-        context.instance_exec(*args, &@value)
+        if context.nil?
+          @value.call(*args)
+        else
+          context.instance_exec(*args, &@value)
+        end
       end
 
       # Callable object is executed in its original context.
