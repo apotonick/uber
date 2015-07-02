@@ -28,7 +28,7 @@ module Uber
       end
 
       def self.uncloneable
-        [Symbol, TrueClass, FalseClass, NilClass]
+        [Symbol, TrueClass, FalseClass, NilClass, Numeric]
       end
     end
   end

@@ -8,6 +8,7 @@ class InheritableAttrTest < MiniTest::Spec
         extend Uber::InheritableAttribute
         inheritable_attr :drinks
         inheritable_attr :glass
+        inheritable_attr :guests
       end
     }
 
@@ -37,15 +38,19 @@ class InheritableAttrTest < MiniTest::Spec
 
     it "inherits attributes" do
       subject.drinks = [:cabernet]
+      subject.guests = 2
 
       subklass_a = Class.new(subject)
       subklass_a.drinks << :becks
+      subklass_a.guests = 13
 
       subklass_b = Class.new(subject)
 
       assert_equal [:cabernet],         subject.drinks
       assert_equal [:cabernet, :becks], subklass_a.drinks
       assert_equal [:cabernet],         subklass_b.drinks
+      assert_equal 2,                   subklass_b.guests
+      assert_equal 13,                subklass_a.guests
     end
 
     it "does not inherit attributes if we set explicitely" do
