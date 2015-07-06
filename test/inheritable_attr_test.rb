@@ -8,7 +8,7 @@ class InheritableAttrTest < MiniTest::Spec
         extend Uber::InheritableAttribute
         inheritable_attr :drinks
         inheritable_attr :glass
-        inheritable_attr :guests
+        inheritable_attr :guests, clone: false
       end
     }
 
