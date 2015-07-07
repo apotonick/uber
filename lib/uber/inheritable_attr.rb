@@ -9,27 +9,17 @@ module Uber
 
         def #{name}
           return @#{name} if instance_variable_defined?(:@#{name})
-          @#{name} = InheritableAttribute.inherit_for(self, :#{name})
+          @#{name} = InheritableAttribute.inherit_for(self, :#{name}, #{options})
         end
-
-        unless respond_to?(:_cloneability)
-          def _cloneability
-            @_cloneability ||= Hash.new {|k| true}
-          end
-        end
-
-        _cloneability[:#{name}] = #{options.fetch(:clone, true)}
       }
     end
 
-    def self.inherit_for(klass, name)
+    def self.inherit_for(klass, name, options={})
       return unless klass.superclass.respond_to?(name)
 
       value = klass.superclass.send(name) # could be nil
-      clonable = klass.superclass._cloneability[name]
-      klass._cloneability[name] = clonable
 
-      if clonable
+      if options.fetch(:clone, true)
         Clone.(value) # this could be dynamic, allowing other inheritance strategies.
       else
         Clone.(value, Array(value.class))
