@@ -36,6 +36,8 @@ class UberOptionTest < MiniTest::Spec
     it { Value.new(:version).evaluate(object.extend(version)).must_equal 999 }
     it { Value.new("version", :dynamic => true).evaluate(object.extend(version)).must_equal 999 }
     it { Value.new(:version, :dynamic => false).evaluate(object.extend(version)).must_equal :version }
+    it { Value.new(lambda { self }).evaluate(object).must_equal object }
+    it { Value.new(lambda { self }).evaluate(nil).must_equal self }
 
     it { Value.new(lambda { :loud }, :dynamic => true).evaluate(object).must_equal :loud }
 

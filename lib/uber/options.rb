@@ -64,6 +64,18 @@ module Uber
         @dynamic
       end
 
+      def proc?
+        @value.kind_of?(Proc)
+      end
+
+      def callable?
+        @value.is_a?(Uber::Callable)
+      end
+
+      def method?
+        @value.is_a?(Symbol)
+      end
+
     private
       def evaluate_for(*args)
         return proc!(*args)     if @proc
@@ -77,24 +89,16 @@ module Uber
       end
 
       def proc!(context, *args)
-        context.instance_exec(*args, &@value)
+        if context.nil?
+          @value.call(*args)
+        else
+          context.instance_exec(*args, &@value)
+        end
       end
 
       # Callable object is executed in its original context.
       def callable!(context, *args)
         @value.call(context, *args)
-      end
-
-      def proc?
-        @value.kind_of?(Proc)
-      end
-
-      def callable?
-        @value.is_a?(Uber::Callable)
-      end
-
-      def method?
-        @value.is_a?(Symbol)
       end
     end
   end
