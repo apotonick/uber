@@ -163,6 +163,16 @@ value.evaluate(context, -122.18) #=> 0
 
 Use `Options::Value#evaluate` to handle single values.
 
+If the `Value` represents a lambda and is `evaluate`d with `nil` as context, the block is called in the original context.
+
+```ruby
+volume = 99
+value = Uber::Options::Value.new(lambda { volume })
+
+value.evaluate(nil) #=> 99
+```
+
+
 ## Performance
 
 Evaluating an options hash can be time-consuming. When `Options` contains static elements only, it behaves *and performs* like an ordinary hash.

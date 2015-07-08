@@ -1,6 +1,7 @@
 # 0.0.14
 
 * Add `inheritable_attr :title, clone: false`. Thanks to @katafrakt.
+* When calling `Option::Value#evaluate` with `nil` as context, and the `Value` represents a lambda, the block is called it its original context via `block.call`.
 
 # 0.0.13
 
