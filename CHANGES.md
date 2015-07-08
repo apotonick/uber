@@ -1,3 +1,7 @@
+# 0.0.14
+
+* Add `inheritable_attr :title, clone: false`. Thanks to @katafrakt.
+
 # 0.0.13
 
 * Add proc syntax for builders. This allows using `return` in the block. Thanks to @dutow for implementing this.

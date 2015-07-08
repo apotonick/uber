@@ -55,7 +55,18 @@ Song.properties #=> [:title, :track]
 It's similar to ActiveSupport's `class_attribute` but with a simpler implementation.
 It is less dangerous. There are no restrictions for modifying the attribute. [compared to `class_attribute`](http://apidock.com/rails/v4.0.2/Class/class_attribute).
 
-This module is used across several other gems like [Cells](https://rubygems.org/gems/cells), [Representable](https://rubygems.org/gems/representable), [Roar](https://rubygems.org/gems/roar) and [Reform](https://rubygems.org/gems/reform).
+## Uncloneable Values
+
+`inheritable_attr` will `clone` values to copy them to subclasses. If you have unclonable values like `Symbol` you need to tell Uber that.
+
+```ruby
+class Song
+  extend Uber::InheritableAttr
+  inheritable_attr :properties, clone: false
+```
+
+This won't `clone` but simply pass the value on to the subclass.
+
 
 # Dynamic Options
 

@@ -50,7 +50,7 @@ class InheritableAttrTest < MiniTest::Spec
       assert_equal [:cabernet, :becks], subklass_a.drinks
       assert_equal [:cabernet],         subklass_b.drinks
       assert_equal 2,                   subklass_b.guests
-      assert_equal 13,                subklass_a.guests
+      assert_equal 13,                  subklass_a.guests
     end
 
     it "does not inherit attributes if we set explicitely" do

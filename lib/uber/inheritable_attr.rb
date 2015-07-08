@@ -19,11 +19,8 @@ module Uber
 
       value = klass.superclass.send(name) # could be nil
 
-      if options.fetch(:clone, true)
-        Clone.(value) # this could be dynamic, allowing other inheritance strategies.
-      else
-        Clone.(value, Array(value.class))
-      end
+      return value if options[:clone] == false
+      Clone.(value) # this could be dynamic, allowing other inheritance strategies.
     end
 
     class Clone
