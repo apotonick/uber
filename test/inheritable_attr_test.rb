@@ -38,19 +38,15 @@ class InheritableAttrTest < MiniTest::Spec
 
     it "inherits attributes" do
       subject.drinks = [:cabernet]
-      subject.guests = 2
 
       subklass_a = Class.new(subject)
       subklass_a.drinks << :becks
-      subklass_a.guests = 13
 
       subklass_b = Class.new(subject)
 
       assert_equal [:cabernet],         subject.drinks
       assert_equal [:cabernet, :becks], subklass_a.drinks
       assert_equal [:cabernet],         subklass_b.drinks
-      assert_equal 2,                   subklass_b.guests
-      assert_equal 13,                  subklass_a.guests
     end
 
     it "does not inherit attributes if we set explicitely" do
@@ -59,6 +55,16 @@ class InheritableAttrTest < MiniTest::Spec
 
       subklass.drinks = [:merlot] # we only want merlot explicitely.
       assert_equal [:merlot], subklass.drinks # no :cabernet, here
+    end
+
+    it "respects clone: false" do
+      subject.guests = 2
+      subklass_a = Class.new(subject)
+      subklass_b = Class.new(subject)
+      subklass_a.guests = 13
+
+      assert_equal 2,  subklass_b.guests
+      assert_equal 13, subklass_a.guests
     end
 
     it "does not attempt to clone symbols" do
