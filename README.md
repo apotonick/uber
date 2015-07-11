@@ -57,7 +57,9 @@ It is less dangerous. There are no restrictions for modifying the attribute. [co
 
 ## Uncloneable Values
 
-`inheritable_attr` will `clone` values to copy them to subclasses. If you have unclonable values like `Symbol` you need to tell Uber that.
+`::inheritable_attr` will `clone` values to copy them to subclasses. Uber won't attempt to clone `Symbol`, `nil`, `true` and `false` per default.
+
+If you assign any other unclonable value you need to tell Uber that.
 
 ```ruby
 class Song
