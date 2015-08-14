@@ -4,6 +4,8 @@ _Gem-authoring tools like class method inheritance in modules, dynamic options a
 
 ## Installation
 
+[![Gem Version](https://badge.fury.io/rb/uber.svg)](http://badge.fury.io/rb/uber)
+
 Add this line to your application's Gemfile:
 
 ```ruby
