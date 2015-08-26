@@ -54,11 +54,12 @@ module Uber
         @dynamic = @proc || @callable || @method
       end
 
-      def evaluate(context, *args)
+      def call(context, *args)
         return @value unless dynamic?
 
         evaluate_for(context, *args)
       end
+      alias_method :evaluate, :call
 
       def dynamic?
         @dynamic

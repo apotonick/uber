@@ -1,3 +1,7 @@
+# 0.0.15
+
+* `Value#evaluate` is now `#call`. This will make it easier to introduce Null objects.
+
 # 0.0.14
 
 * Add `inheritable_attr :title, clone: false`. Thanks to @katafrakt.

@@ -25,24 +25,28 @@ class UberOptionTest < MiniTest::Spec
     it { Value.new(Callable.new).dynamic?.must_equal true }
   end
 
-  describe "#evaluate" do
+  describe "#call" do
     let (:version) { Module.new { def version; 999 end } }
 
-    it { Value.new(nil).evaluate(Object.new).must_equal nil }
-    # it { Value.new(nil, :dynamic => true).evaluate(Object.new).must_equal nil } # DISCUSS: should we handle that?
+    it { Value.new(nil).(Object.new).must_equal nil }
+    # it { Value.new(nil, :dynamic => true).(Object.new).must_equal nil } # DISCUSS: should we handle that?
 
-    it { Value.new(true).evaluate(Object.new).must_equal true }
+    it { Value.new(true).(Object.new).must_equal true }
 
-    it { Value.new(:version).evaluate(object.extend(version)).must_equal 999 }
-    it { Value.new("version", :dynamic => true).evaluate(object.extend(version)).must_equal 999 }
-    it { Value.new(:version, :dynamic => false).evaluate(object.extend(version)).must_equal :version }
-    it { Value.new(lambda { self }).evaluate(object).must_equal object }
-    it { Value.new(lambda { self }).evaluate(nil).must_equal self }
+    it { Value.new(:version).(object.extend(version)).must_equal 999 }
+    it { Value.new("version", :dynamic => true).(object.extend(version)).must_equal 999 }
+    it { Value.new(:version, :dynamic => false).(object.extend(version)).must_equal :version }
+    it { Value.new(lambda { self }).(object).must_equal object }
+    it { Value.new(lambda { self }).(nil).must_equal self }
 
-    it { Value.new(lambda { :loud }, :dynamic => true).evaluate(object).must_equal :loud }
+    it { Value.new(lambda { :loud }, :dynamic => true).(object).must_equal :loud }
 
     # Uber::Callable
-    it { Value.new(Callable.new).evaluate(nil).must_equal 999 }
+    it { Value.new(Callable.new).(nil).must_equal 999 }
+  end
+
+  it "#call is aliased to evaluate" do
+    Value.new(Callable.new).(nil).must_equal 999
   end
 
   describe "passing options" do
@@ -50,9 +54,9 @@ class UberOptionTest < MiniTest::Spec
     let (:block) { Proc.new { |*args| args.inspect } }
     let (:callable) { (Class.new { include Uber::Callable; def call(*args); args.inspect; end }).new }
 
-    it { Value.new(:version).evaluate(object.extend(version), 1, 2, 3).must_equal "[1, 2, 3]" }
-    it { Value.new(block).evaluate(object, 1, 2, 3).must_equal "[1, 2, 3]" }
-    it { Value.new(callable).evaluate(Object, 1, 2, 3).must_equal "[Object, 1, 2, 3]" }
+    it { Value.new(:version).(object.extend(version), 1, 2, 3).must_equal "[1, 2, 3]" }
+    it { Value.new(block).(object, 1, 2, 3).must_equal "[1, 2, 3]" }
+    it { Value.new(callable).(Object, 1, 2, 3).must_equal "[Object, 1, 2, 3]" }
   end
 
   # it "speed" do
