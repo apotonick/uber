@@ -84,7 +84,7 @@ module Uber
       #
       # In your view #cell will instantiate the right class for you now.
       def builds(proc=nil, &block)
-        builders << Uber::Options::Value.new(proc.kind_of?(Proc) ? proc : block) # TODO: provide that in Uber::O:Value.
+        builders << Uber::Options::Value.new(proc.nil? ? block : proc) # TODO: provide that in Uber::O:Value.
       end
 
       # Call this from your classes' own ::build method to compute the concrete target class.
