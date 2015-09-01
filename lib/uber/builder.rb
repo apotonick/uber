@@ -1,3 +1,5 @@
+require "uber/options"
+
 module Uber
   # When included, allows to add builder on the class level.
   #
@@ -28,9 +30,11 @@ module Uber
       end
     end
 
+    # Computes the concrete target class.
     class Constant
-      def initialize(constant) # TODO: evaluate usage of builders and implement using Uber::Options::Value.
+      def initialize(constant, context)
         @constant     = constant
+        @context      = context
         @builders     = @constant.builders # only dependency, must be a Cell::Base subclass.
       end
 
@@ -47,7 +51,7 @@ module Uber
       end
 
       def run_builder_block(block, *args)
-        block.call(*args)
+        block.(@context, *args) # Uber::Value.call()
       end
     end
 
@@ -78,13 +82,15 @@ module Uber
       #     AdminUserBox if model.admin?
       #   end
       #
-      # In your view #cell will instantiate the right cell for you now.
+      # In your view #cell will instantiate the right class for you now.
       def builds(proc=nil, &block)
-        builders << (proc.kind_of?(Proc) ? proc : block)
+        builders << Uber::Options::Value.new(proc.kind_of?(Proc) ? proc : block) # TODO: provide that in Uber::O:Value.
       end
 
-      def class_builder
-        @class_builder ||= Constant.new(self)
+      # Call this from your classes' own ::build method to compute the concrete target class.
+      # The class_builder is cached, you can't change the context once it's set.
+      def class_builder(context=nil)
+        @class_builder ||= Constant.new(self, context)
       end
     end # ClassMethods
   end

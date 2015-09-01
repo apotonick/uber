@@ -73,3 +73,46 @@ class BuilderTest < MiniTest::Spec
   it { Boomerang.build({}).must_be_instance_of Boomerang }
   it { Boomerang.build({hit: true}).must_be_instance_of Song }
 end
+
+
+class BuilderScopeTest < MiniTest::Spec
+  class Hit; end
+
+  class Song
+    class Hit
+    end
+
+    include Uber::Builder
+
+    builds ->(options) do
+      self::Hit
+    end
+
+    def self.build(context)
+      class_builder(context).call({}).new
+    end
+  end
+
+  class Evergreen
+    class Hit
+    end
+
+    include Uber::Builder
+
+    class << self
+      attr_writer :builders
+    end
+    self.builders = Song.builders
+
+    def self.build(context)
+      class_builder(context).call({}).new
+    end
+  end
+
+  it { Song.build(self.class).must_be_instance_of BuilderScopeTest::Hit }
+  # since the class_builder gets cached, this won't change.
+  it { Song.build(Song).must_be_instance_of BuilderScopeTest::Hit }
+
+  # running the "copied" block in Evergreen will reference the correct @context.
+  it { Evergreen.build(Evergreen).must_be_instance_of BuilderScopeTest::Evergreen::Hit }
+end
