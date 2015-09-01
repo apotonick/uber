@@ -1,6 +1,8 @@
 # 0.0.15
 
 * `Value#evaluate` is now `#call`. This will make it easier to introduce Null objects.
+* Options passed to `::builds` are now wrapped in `Uber::Options::Value` which allows specifying builder _class methods_ using `builds :builder_method`.
+* `Builder::class_builder` now accepts an optional context object which is used to `instance_exec` the builder blocks. This allows to share predefined builder blocks between different classes while resolving the constants in the respective class.
 
 # 0.0.14
 

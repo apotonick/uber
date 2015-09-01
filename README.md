@@ -222,7 +222,7 @@ Note how `#title` calls the original title and then downcases the string.
 When included, `Builder` allows to add builder instructions on the class level. These can then be evaluated when instantiating
 the class to conditionally build (sub-)classes based on the incoming parameters.
 
-Builders can be defined in two different ways.
+Builders can be defined in three different ways.
 
 ## Block Syntax
 
@@ -271,6 +271,33 @@ end
 
 This makes the block extremely readable.
 
+## Method Syntax
+
+You can also specify a build method.
+
+```ruby
+build :build_method
+
+def self.build_method(params)
+  return SignedIn if params[:current_user]
+end
+```
+
+The method has to be a class method on the building class.
+
+## Build Context
+
+Normally, build blocks and methods are run in the context where they were defined in. You can change that by passing any context object to `class_builder`.
+
+```ruby
+def self.build(params)
+  class_builder(context_object) # ...
+end
+```
+
+This allows copying builders to other classes and evaluate blocks in the new context.
+
+## More On Builders
 
 Note that builders are _not_ inherited to subclasses. This allows instantiating subclasses directly without running builders.
 
