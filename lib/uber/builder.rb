@@ -39,7 +39,10 @@ module Uber
       end
 
       def call(*args)
-        build_class_for(*args)
+        kls = build_class_for(*args)
+        return kls if kls == @constant
+        return kls unless kls.include?(Uber::Builder)
+        kls.class_builder.call(*args)
       end
 
     private
