@@ -17,7 +17,7 @@ module Uber
 
     # Evaluates every element and returns a hash.  Accepts context and arbitrary arguments.
     def evaluate(context, *args)
-      return @static unless dynamic?
+      return @static.dup unless dynamic?
 
       evaluate_for(context, *args)
     end

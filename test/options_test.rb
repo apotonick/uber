@@ -106,6 +106,13 @@ class UberOptionsTest < MiniTest::Spec
         end
         static.evaluate(nil).must_equal({:volume =>1, :style => "Punkrock"})
       end
+
+      it "prevent modifying internals" do
+        evaluated = static.evaluate(nil)
+        evaluated.delete(:volume)
+
+        static.evaluate(nil).must_equal({:volume =>1, :style => "Punkrock"})
+      end
     end
   end
 
