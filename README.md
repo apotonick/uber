@@ -262,7 +262,7 @@ Listener.build({current_user: @current_user}) #=> SignedIn
 Setting up builders using the proc syntax allows to call `return` in the block. This is our preferred way to define builders.
 
 ```ruby
-build ->(params) do
+builds ->(params) do
   return SignedIn if params[:current_user]
   return Admin    if params[:admin]
   Default
