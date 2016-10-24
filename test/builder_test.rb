@@ -62,7 +62,7 @@ class BuilderTest < MiniTest::Spec
     include Uber::Builder
 
     builds ->(options) do
-      return Song if options[:hit]
+      return Song if options[:song]
     end
 
     def self.build(options)
@@ -71,7 +71,7 @@ class BuilderTest < MiniTest::Spec
   end
 
   it { Boomerang.build({}).must_be_instance_of Boomerang }
-  it { Boomerang.build({hit: true}).must_be_instance_of Song }
+  it { Boomerang.build({song: true}).must_be_instance_of Song }
 end
 
 
@@ -135,4 +135,62 @@ class BuilderScopeTest < MiniTest::Spec
 
     Evergreen.build(Evergreen, from_builder_method: true).must_equal BuilderScopeTest::Evergreen
   end
+end
+
+
+class DeeplyNestedBuilderTest < MiniTest::Spec
+  class FromOutside
+  end
+
+  class Parent
+    include Uber::Builder
+
+    builds ->(params) do
+      return Sub if params[:sub]
+    end
+
+    def self.build(options)
+      class_builder.call(options).new
+    end
+
+    class Sub < self
+
+      builds ->(params) do
+        return DeepSub if params[:deep_sub]
+        return FromOutside if params[:outside]
+      end
+
+      class DeepSub < self
+
+        builds do |params|
+          if params[:very_deep_sub]
+            VeryDeepSub
+          elsif  params[:outside]
+            FromOutside
+          end
+        end
+
+        class VeryDeepSub < self
+          # and I can go even further!!!!
+        end
+      end
+    end
+  end
+
+  it { Parent.build({}).must_be_instance_of Parent }
+  it { Parent.build({sub: true})
+    .must_be_instance_of Parent::Sub }
+  it { Parent.build({sub: true, deep_sub: true})
+    .must_be_instance_of Parent::Sub::DeepSub }
+  it { Parent.build({sub: true, deep_sub: true, very_deep_sub: true})
+    .must_be_instance_of Parent::Sub::DeepSub::VeryDeepSub }
+
+  # calling a class that's not inherited
+  it { Parent.build({outside: true}).must_be_instance_of Parent }
+  it { Parent.build({sub: true, outside: true})
+    .must_be_instance_of FromOutside }
+  it { Parent.build({sub: true, deep_sub: true, outside: true})
+    .must_be_instance_of FromOutside }
+  it { Parent.build({sub: true, deep_sub: true, very_deep_sub: true, outside: true})
+    .must_be_instance_of Parent::Sub::DeepSub::VeryDeepSub }
 end
