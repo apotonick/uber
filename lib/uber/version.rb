@@ -18,7 +18,7 @@ module Uber
 
     def ~(*versions)
       !! versions.find do |v|
-        major, minor, patch = parse(v)
+        major, minor, _patch = parse(v)
 
         self[:major] == major and self[:minor] == minor
       end
