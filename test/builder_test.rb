@@ -135,4 +135,22 @@ class BuilderScopeTest < MiniTest::Spec
 
     Evergreen.build(Evergreen, from_builder_method: true).must_equal BuilderScopeTest::Evergreen
   end
+
+  #---
+  # pass the builders array into Constant.new.
+  #- Constant
+  class A
+    include Uber::Builder
+
+    builds ->(options) do
+      return Song if options[:hit]
+    end
+
+    def self.build(options)
+      Uber::Builder::Constant.new(A, nil, self.builders).call(options).new
+    end
+  end
+
+  it { A.build({}).must_be_instance_of A }
+  it { A.build({ hit: true }).must_be_instance_of Song }
 end

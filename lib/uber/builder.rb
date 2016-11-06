@@ -21,21 +21,13 @@ module Uber
   #     end
   module Builder
     def self.included(base)
-      base.class_eval do
-        def self.builders
-          @builders ||= []
-        end
-
-        extend ClassMethods
-      end
+      base.extend ClassMethods
     end
 
     # Computes the concrete target class.
     class Constant
-      def initialize(constant, context)
-        @constant     = constant
-        @context      = context
-        @builders     = @constant.builders # only dependency, must be a Cell::Base subclass.
+      def initialize(constant, context, builders=constant.builders)
+        @constant, @context, @builders = constant, context, builders
       end
 
       def call(*args)
@@ -47,6 +39,10 @@ module Uber
     end
 
     module ClassMethods
+      def builders
+        @builders ||= []
+      end
+
       # Adds a builder to the cell class. Builders are used in #cell to find out the concrete
       # class for rendering. This is helpful if you frequently want to render subclasses according
       # to different circumstances (e.g. login situations) and you don't want to place these deciders in
@@ -81,8 +77,10 @@ module Uber
       # Call this from your classes' own ::build method to compute the concrete target class.
       # The class_builder is cached, you can't change the context once it's set.
       def class_builder(context=nil)
-        @class_builder ||= Constant.new(self, context)
+        @class_builder ||= Constant.new(self, context, self.builders)
       end
     end # ClassMethods
+
+    DSL = ClassMethods
   end
 end
