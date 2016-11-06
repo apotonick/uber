@@ -5,7 +5,7 @@ Gem::Specification.new do |gem|
   gem.authors       = ["Nick Sutterer"]
   gem.email         = ["apotonick@gmail.com"]
   gem.description   = %q{A gem-authoring framework.}
-  gem.summary       = %q{Gem-authoring tools like class method inheritance in modules, dynamic options and more.}
+  gem.summary       = %q{Gem-authoring tools like generic builders, dynamic options and more.}
   gem.homepage      = "https://github.com/apotonick/uber"
   gem.license       = "MIT"
 
@@ -16,6 +16,6 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Uber::VERSION
 
-  gem.add_development_dependency "rake",      ">= 0.10.1"
-  gem.add_development_dependency "minitest",  ">= 5.0.0"
+  gem.add_development_dependency "rake"
+  gem.add_development_dependency "minitest"
 end
