@@ -12,6 +12,8 @@ Add this line to your application's Gemfile:
 gem 'uber'
 ```
 
+Uber runs with Ruby >= 1.9.3.
+
 Ready?
 
 # Inheritable Class Attributes
