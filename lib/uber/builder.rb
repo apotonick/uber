@@ -39,19 +39,10 @@ module Uber
       end
 
       def call(*args)
-        build_class_for(*args)
-      end
-
-    private
-      def build_class_for(*args)
-        @builders.each do |blk|
-          klass = run_builder_block(blk, *args) and return klass
+        @builders.each do |block|
+          klass = block.(@context, *args) and return klass # Uber::Value#call()
         end
         @constant
-      end
-
-      def run_builder_block(block, *args)
-        block.(@context, *args) # Uber::Value.call()
       end
     end
 
