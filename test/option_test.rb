@@ -2,7 +2,6 @@ require "test_helper"
 require "uber/option"
 
 class OptionTest < Minitest::Spec
-  # Option[proc] ===> proc
   Option = Uber::Option
 
   # proc

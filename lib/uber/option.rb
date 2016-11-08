@@ -8,17 +8,9 @@ module Uber
         return value
       end
 
-      return value if value.is_a?(Uber::Callable)
+      return value                                            if value.is_a?(Uber::Callable)
       return ->(context, *args){ context.send(value, *args) } if value.is_a?(Symbol)
-      new(value)
-    end
-
-    def initialize(value)
-      @value = value
-    end
-
-    def call(*)
-      @value
+      ->(*) { value }
     end
   end
 end
