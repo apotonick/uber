@@ -17,7 +17,7 @@ class BuilderTest < MiniTest::Spec
     end
 
     def self.build(options)
-      class_builder.call(options).new
+      build!(self, options).new
     end
   end
 
@@ -40,7 +40,7 @@ class BuilderTest < MiniTest::Spec
     end
 
     def self.build(options)
-      class_builder.call(options).new
+      build!(self, options).new
     end
   end
 
@@ -66,7 +66,7 @@ class BuilderTest < MiniTest::Spec
     end
 
     def self.build(options)
-      class_builder.call(options).new
+      build!(self, options).new
     end
   end
 
@@ -94,8 +94,15 @@ class BuilderScopeTest < MiniTest::Spec
     end
 
     def self.build(context, options={})
-      class_builder(context).call(options)
+      build!(context, options)
     end
+  end
+
+  it do
+    Song.build(self.class).must_equal BuilderScopeTest::Hit
+
+    # this runs BuilderScopeTest::builder_method and returns self.
+    Song.build(self.class, from_builder_method: true).must_equal BuilderScopeTest
   end
 
   class Evergreen
@@ -110,24 +117,13 @@ class BuilderScopeTest < MiniTest::Spec
     self.builders = Song.builders
 
     def self.build(context, options={})
-      class_builder(context).call(options)
+      build!(context, options)
     end
 
     def self.builder_method(options)
       options[:from_builder_method] and return self
     end
   end
-
-  it do
-    Song.build(self.class).must_equal BuilderScopeTest::Hit
-
-    # this runs BuilderScopeTest::builder_method and returns self.
-    Song.build(self.class, from_builder_method: true).must_equal BuilderScopeTest
-
-    # since the class_builder gets cached, this won't change.
-    Song.build(Song).must_equal BuilderScopeTest::Hit
-  end
-
 
   it do
     # running the "copied" block in Evergreen will reference the correct @context.
@@ -147,7 +143,7 @@ class BuilderScopeTest < MiniTest::Spec
     end
 
     def self.build(options)
-      Uber::Builder::Constant.new(A, nil, self.builders).call(options).new
+      Uber::Builder::Constant.(self.builders, A, options).new
     end
   end
 
