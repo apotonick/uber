@@ -1,4 +1,5 @@
-require 'uber/callable'
+require "uber/callable"
+require "uber/option"
 
 module Uber
   class Options < Hash
@@ -6,41 +7,27 @@ module Uber
       @static = options
 
       options.each do |k,v|
-        self[k] = option = Value.new(v)
-        @static = nil if option.dynamic?
+        self[k] = Option[v, instance_exec: true]
       end
     end
 
-    #   1.100000   0.060000   1.160000 (  1.159762) original
-    #   0.120000   0.010000   0.130000 (  0.135803) return self
-    #   0.930000   0.060000   0.990000 (  0.997095) without v.evaluate
-
     # Evaluates every element and returns a hash.  Accepts context and arbitrary arguments.
     def evaluate(context, *args)
-      return @static unless dynamic?
-
-      evaluate_for(context, *args)
-    end
-
-    # Evaluates a single value.
-    def eval(key, *args)
-      self[key].evaluate(*args)
-    end
-
-  private
-    def evaluate_for(context, *args)
       {}.tap do |evaluated|
         each do |k,v|
-          evaluated[k] = v.evaluate(context, *args)
+          evaluated[k] = v.(context, *args)
         end
       end
     end
 
-    def dynamic?
-      not @static
+    # Evaluates a single value.
+    def eval(key, *args)
+      self[key].(*args)
     end
 
+  private
 
+    # DEPRECATED! PLEASE USE UBER::OPTION.
     class Value # TODO: rename to Value.
       def initialize(value, options={})
         @value, @dynamic = value, options[:dynamic]
