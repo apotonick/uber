@@ -14,8 +14,6 @@ gem 'uber'
 
 Uber runs with Ruby >= 1.9.3.
 
-Ready?
-
 # Inheritable Class Attributes
 
 If you want inherited class attributes, this is for you.
@@ -221,126 +219,113 @@ Note how `#title` calls the original title and then downcases the string.
 
 # Builder
 
-When included, `Builder` allows to add builder instructions on the class level. These can then be evaluated when instantiating
-the class to conditionally build (sub-)classes based on the incoming parameters.
+Builders are good for polymorphically creating objects without having to know where that happens. You define a builder with conditions in one class, and that class takes care of creating the actual desired class.
 
-Builders can be defined in three different ways.
+## Declarative Interface
 
-## Block Syntax
+Include `Uber::Builder` to leverage the `::builds` method for adding builders, and `::build!` to run those builders in a given context and with arbitrary options.
+
 
 ```ruby
-class Listener
+require "uber/builder"
+
+class User
   include Uber::Builder
 
-  builds do |params|
-    SignedIn if params[:current_user]
+  builds do |options|
+    Admin if params[:admin]
   end
 end
 
-class SignedIn
+class Admin
 end
 ```
 
-The class then has to use the builder to compute a class name using the build blocks you defined.
+Note that you can call `builds` as many times as you want per class.
+
+Run the builders using `::build!`.
 
 ```ruby
-class Listener
-  def self.build(params)
-    class_builder.call(params).
-    new(params)
+User.build!(User, {})              #=> User
+User.build!(User, { admin: true }) #=> Admin
+```
+The first argument is the context in which the builder blocks will be executed. This is also the default return value if all builders returned a falsey value.
+
+All following arguments will be passed straight through to the procs.
+
+Your API should communicate `User` as the only public class, since the builder hides details about computing the concrete class.
+
+### Builder: Procs
+
+You may also use procs instead of blocks.
+
+```ruby
+class User
+  include Uber::Builder
+
+  builds ->(options) do
+    return SignedIn if params[:current_user]
+    return Admin    if params[:admin]
+    Anonymous
   end
 end
 ```
 
-As you can see, it's still up to you to _instantiate_ the object, the builder only helps you computing the concrete class.
+Note that this allows `return`s in the block.
+
+## Builder: Direct API
+
+In case you don't want the `builds` DSL, you can instantiate a `Builders` object yourself and add builders to it using `#<<`.
 
 ```ruby
-Listener.build({}) #=> Listener
-Listener.build({current_user: @current_user}) #=> SignedIn
-```
-
-## Proc Syntax
-
-Setting up builders using the proc syntax allows to call `return` in the block. This is our preferred way to define builders.
-
-```ruby
-builds ->(params) do
-  return SignedIn if params[:current_user]
-  return Admin    if params[:admin]
-  Default
+MyBuilders = Uber::Builder::Builders.new
+MyBuilders << ->(options) do
+  return Admin if options[:admin]
 end
 ```
 
-This makes the block extremely readable.
+Note that you can call `Builders#<<` multiple times per instance.
 
-## Method Syntax
-
-You can also specify a build method.
+Invoke the builder using `#call`.
 
 ```ruby
-build :build_method
+MyBuilders.call(User, {})              #=> User
+MyBuilders.call(User, { admin: true }) #=> Admin
+```
 
-def self.build_method(params)
-  return SignedIn if params[:current_user]
+Again, the first object is the context/default return value, all other arguments are passed to the builder procs.
+
+## Builder: Contexts
+
+Every proc is `instance_exec`ed in the context you pass into `build!` (or `call`), allowing you to define generic, shareable builders.
+
+```ruby
+MyBuilders = Uber::Builder::Builders.new
+MyBuilders << ->(options) do
+  return self::Admin if options[:admin] # note the self:: !
+end
+
+class User
+  class Admin
+  end
+end
+
+class Instructor
+  class Admin
+  end
 end
 ```
 
-The method has to be a class method on the building class.
-
-## Build Context
-
-Normally, build blocks and methods are run in the context where they were defined in. You can change that by passing any context object to `class_builder`.
+Now, depending on the context class, the builder will return different classes.
 
 ```ruby
-def self.build(params)
-  class_builder(context_object) # ...
-end
+MyBuilders.call(User, {})              #=> User
+MyBuilders.call(User, { admin: true }) #=> User::Admin
+MyBuilders.call(Instructor, {})              #=> Instructor
+MyBuilders.call(Instructor, { admin: true }) #=> Instructor::Admin
 ```
 
-This allows copying builders to other classes and evaluate blocks in the new context.
-
-## More On Builders
-
-Note that builders are _not_ inherited to subclasses. This allows instantiating subclasses directly without running builders.
-
-This pattern is used in [Cells](https://github.com/apotonick/cells), [Trailblazer](https://github.com/apotonick/trailblazer) and soon Reform and Representable/Roar, too.
-
-# Version
-
-Writing gems against other gems often involves checking for versions and loading appropriate version strategies - e.g. _"is Rails >= 4.0?"_. Uber gives you `Version` for easy, semantic version deciders.
-
-```ruby
-version = Uber::Version.new("1.2.3")
-```
-
-The API currently gives you `#>=` and `#~`.
-
-```ruby
-version >= "1.1" #=> true
-version >= "1.3" #=> false
-```
-
-The `~` method does a semantic check (currently on major and minor level, only).
-
-```ruby
-version.~ "1.1" #=> false
-version.~ "1.2" #=> true
-version.~ "1.3" #=> false
-```
-
-Accepting a list of versions, it makes it simple to check for multiple minor versions.
-
-```ruby
-version.~ "1.1", "1.0" #=> false
-version.~ "1.1", "1.2" #=> true
-```
-
-
-# Undocumented Features
-
-(Please don't read this!)
-
-* You can enforce treating values as dynamic (or not): `Uber::Options::Value.new("time_to_live", dynamic: true)` will always run `#time_to_live` as an instance method on the context, even though it is not a symbol.
+Don't forget the `self::` when writing generic builders, and write tests.
 
 # License
 
