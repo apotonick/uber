@@ -1,3 +1,10 @@
+# 0.1.0
+
+* Introduce `Uber::Option` as a replacement for `Uber::Options::Value`. It is still there, but deprecated.
+* New API for `Uber::Builder`: You now add builders to `Uber::Builder::Builders` and simply call that instance while passing in context and args. This allows very simple reusable builders that can be used anywhere.
+* `Uber::Options` now uses `Uber::Option`.
+* Removing `Uber::Version` as this is done nicely by `Gem::Version`.
+
 # 0.0.15
 
 * `Value#evaluate` is now `#call`. This will make it easier to introduce Null objects.
