@@ -147,17 +147,9 @@ Note how you simply pass an instance of the callable object into the hash instea
 options = Uber::Options.new(tags: Tags.new)
 ```
 
-## Evaluating Elements
-
-If you want to evaluate a single option element, use `#eval`.
-
-```ruby
-options.eval(:ttl, user) #=> "n/a"
-```
-
 ## Option
 
-`Uber::Option` implements the pattern of taking an option, either block, proc, instance method name, or a static value such as a string, and then evaluate that very value at runtime.
+`Uber::Option` implements the pattern of taking an option, such as a proc, instance method name, or static value, and evaluate it at runtime without knowing the option's implementation.
 
 Creating `Option` instances via `::[]` usually happens on class-level in DSL methods.
 
