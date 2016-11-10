@@ -16,7 +16,6 @@ module Uber
         context
       end
 
-      # FIXME: test me.
       def <<(proc)
         super Uber::Option[proc, instance_exec: true]
       end

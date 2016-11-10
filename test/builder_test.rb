@@ -133,19 +133,15 @@ class BuilderScopeTest < MiniTest::Spec
   end
 
   #---
-  # call Builders manually (what actually do we test here?)
-  class A
-    include Uber::Builder
-
-    builds ->(options) do
-      return Song if options[:hit]
-    end
-
-    def self.build(options)
-      builders.call(A, options).new
-    end
+  # Builders API
+  # Builders#call
+  # Builders#<<
+  A = Class.new
+  MyBuilders = Uber::Builder::Builders.new
+  MyBuilders << ->(options) do
+    return Song if options[:hit]
   end
 
-  it { A.build({}).must_be_instance_of A }
-  it { A.build({ hit: true }).must_be_instance_of Song }
+  it { MyBuilders.call(A, {}).new.must_be_instance_of A }
+  it { MyBuilders.call(A, { hit: true }).new.must_be_instance_of Song }
 end
