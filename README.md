@@ -155,31 +155,61 @@ If you want to evaluate a single option element, use `#eval`.
 options.eval(:ttl, user) #=> "n/a"
 ```
 
-## Single Values
+## Option
 
-Sometimes you don't need an entire hash but a dynamic value, only.
+`Uber::Option` implements the pattern of taking an option, either block, proc, instance method name, or a static value such as a string, and then evaluate that very value at runtime.
 
-```ruby
-value = Uber::Options::Value.new(lambda { |volume| volume < 0 ? 0 : volume })
-
-value.evaluate(context, -122.18) #=> 0
-```
-
-Use `Options::Value#evaluate` to handle single values.
-
-If the `Value` represents a lambda and is `evaluate`d with `nil` as context, the block is called in the original context.
+Creating `Option` instances via `::[]` usually happens on class-level in DSL methods.
 
 ```ruby
-volume = 99
-value = Uber::Options::Value.new(lambda { volume })
+with_proc    = Uber::Option[ ->(options) { "proc: #{options.inspect}" } ]
+with_static  = Uber::Option[ "Static value" ]
+with_method  = Uber::Option[ :name_of_method ]
 
-value.evaluate(nil) #=> 99
+def name_of_method(options)
+  "method: #{options.inspect}"
+end
 ```
 
+Use `#call` to evaluate the options at runtime.
 
-## Performance
+```ruby
+with_proc.(1, 2)         #=> "proc: [1, 2]"
+with_static.(1, 2)       #=> "Static value"   # arguments are ignored
+with_method.(self, 1, 2) #=> "method: [1, 2]" # first arg is context
+```
 
-Evaluating an options hash can be time-consuming. When `Options` contains static elements only, it behaves *and performs* like an ordinary hash.
+It's also possible to evaluate a callable object. It has to be marked with `Uber::Callable` beforehand.
+
+```ruby
+class MyCallable
+  include Uber::Callable
+
+  def call(context, *args)
+    "callable: #{args.inspect}, #{context}"
+  end
+end
+
+with_callable = Uber::Option[ MyCallable.new ]
+```
+
+The context is passed as first argument.
+
+```ruby
+with_callable.(Object, 1, 2) #=> "callable: [1, 2] Object"
+```
+
+You can also make blocks being `instance_exec`ed on the context, giving a unique API to all option types.
+
+```ruby
+with_instance_proc  = Uber::Option[ ->(options) { "proc: #{options.inspect} #{self}" }, instance_exec: true ]
+```
+
+The first argument now becomes the context, exactly the way it works for the method and callable type.
+
+```ruby
+with_instance_proc.(Object, 1, 2) #=> "proc [1, 2] Object"
+```
 
 
 # Delegates
@@ -215,7 +245,6 @@ song.title #=> "helloween!"
 ```
 
 Note how `#title` calls the original title and then downcases the string.
-
 
 # Builder
 
