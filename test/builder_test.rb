@@ -133,8 +133,7 @@ class BuilderScopeTest < MiniTest::Spec
   end
 
   #---
-  # pass the builders array into Constant.new.
-  #- Constant
+  # call Builders manually (what actually do we test here?)
   class A
     include Uber::Builder
 
@@ -143,7 +142,7 @@ class BuilderScopeTest < MiniTest::Spec
     end
 
     def self.build(options)
-      Uber::Builder::Constant.(self.builders, A, options).new
+      builders.call(A, options).new
     end
   end
 
