@@ -71,6 +71,17 @@ class Song
 
 This won't `clone` but simply pass the value on to the subclass.
 
+## Inherit method
+
+`::inheritable_attr` uses `Object#clone` method which doesn't work properly for cloning i.e. hashes. You can specify your own inherit method:
+
+```ruby
+require 'active_support/core_ext/object/deep_dup'
+
+class Song
+  extend Uber::InheritableAttr
+  inheritable_attr :properties, inherit_method: :deep_dup
+```
 
 # Dynamic Options
 

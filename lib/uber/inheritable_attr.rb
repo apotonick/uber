@@ -20,7 +20,12 @@ module Uber
       value = klass.superclass.send(name) # could be nil
 
       return value if options[:clone] == false
-      Clone.(value) # this could be dynamic, allowing other inheritance strategies.
+
+      if options[:inherit_method]
+        value.send(options[:inherit_method])
+      else
+        Clone.(value) # this could be dynamic, allowing other inheritance strategies.
+      end
     end
 
     class Clone

@@ -9,6 +9,9 @@ class InheritableAttrTest < MiniTest::Spec
         inheritable_attr :drinks
         inheritable_attr :glass
         inheritable_attr :guests, clone: false
+
+        inheritable_attr :dj, inherit_method: :dup
+        self.dj = "Paul Oakenfold".freeze
       end
     }
 
@@ -86,6 +89,13 @@ class InheritableAttrTest < MiniTest::Spec
       subklass = Class.new(subject)
 
       subklass.glass.must_equal false
+    end
+
+    it "respects :inherit_method" do
+      class B < subject
+      end
+
+      refute B.dj.frozen?
     end
   end
 end
