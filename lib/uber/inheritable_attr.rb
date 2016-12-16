@@ -26,7 +26,13 @@ module Uber
     class Clone
       # The second argument allows injecting more types.
       def self.call(value, uncloneable=uncloneable())
-        uncloneable.each { |klass| return value if value.kind_of?(klass) }
+        uncloneable.each do |klass| 
+          if value.kind_of?(klass)
+            STDERR.puts "[DEPRECATION WARNING] You are relying on automatic uncloneable classes detection, which will be removed. Please, use 'clone: false' with your inheritable_attr definition instead."
+            return value
+          end
+        end
+
         value.clone
       end
 
