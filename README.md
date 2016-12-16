@@ -1,4 +1,5 @@
 # Uber
+[![Build Status](https://travis-ci.org/apotonick/uber.svg)](https://travis-ci.org/apotonick/uber)
 
 _Gem-authoring tools like class method inheritance in modules, dynamic options and more._
 
