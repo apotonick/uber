@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'uber/options'
 
-class UberOptionsTest < MiniTest::Spec
+class UberOptionsTest < Minitest::Spec
   Options = Uber::Options
 
   let (:dynamic) { Options.new(:volume =>1, :style => "Punkrock", :track => Proc.new { |i| i.to_s }) }

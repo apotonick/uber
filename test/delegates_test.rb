@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'uber/delegates'
 
-class DelegatesTest < MiniTest::Spec
+class DelegatesTest < Minitest::Spec
   class Song
     extend Uber::Delegates
 
