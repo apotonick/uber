@@ -1,7 +1,7 @@
 require 'test_helper'
 require "uber/inheritable_attr"
 
-class InheritableAttrTest < MiniTest::Spec
+class InheritableAttrTest < Minitest::Spec
   describe "::inheritable_attr" do
     subject {
       Class.new(Object) do

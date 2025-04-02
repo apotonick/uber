@@ -1,7 +1,7 @@
 require 'test_helper'
 require "uber/builder"
 
-class BuilderTest < MiniTest::Spec
+class BuilderTest < Minitest::Spec
   Evergreen = Struct.new(:title)
   Hit  = Struct.new(:title)
 
@@ -75,7 +75,7 @@ class BuilderTest < MiniTest::Spec
 end
 
 
-class BuilderScopeTest < MiniTest::Spec
+class BuilderScopeTest < Minitest::Spec
   def self.builder_method(options)
     options[:from_builder_method] and return self
   end
