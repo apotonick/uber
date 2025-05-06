@@ -17,5 +17,5 @@ Gem::Specification.new do |gem|
   gem.version       = Uber::VERSION
 
   gem.add_development_dependency "rake"
-  gem.add_development_dependency "minitest"
+  gem.add_development_dependency "minitest", '~> 4.0'
 end
