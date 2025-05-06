@@ -15,7 +15,7 @@
 #   end
 # end
 
-# class InheritanceTest < MiniTest::Spec
+# class InheritanceTest < Minitest::Spec
 #   module Feature
 #     #extend Uber::InheritedIncluded
 
